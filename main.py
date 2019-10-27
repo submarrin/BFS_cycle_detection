@@ -6,7 +6,7 @@ def read_graph():
     for i in range(int(n)):
         line = file_in.readline()
         graph_matrix.append([x == "1" for x in line.split()])
-    print(*graph_matrix, sep='\n')
+    # print(*graph_matrix, sep='\n')
     file_in.close()
     return graph_matrix
 
@@ -20,30 +20,32 @@ def find_neighbour(s, matr, excluded=[]):
     return [x for x in neighbours]
 
 
-#print(find_neighbour(3, read_graph()))
+# print(find_neighbour(3, read_graph()))
 
 
 def bfs(matr):
     queue = []
     visited = [False] * len(matr)
     queue.append(0)
+    pred = [-1]*len(matr)
     cycle = []
-    current = None
     # print('Начало работы', {'queue': queue, 'visited': visited, 'current': current})
-    import pdb
-    pdb.set_trace()
+    # import pdb
+    # pdb.set_trace()
     while len(queue) > 0:
-        # print('Проверяем, что в очереди есть что-то', {'queue': queue, 'visited': visited, 'current': current})
+        exclude_elements = queue.copy()
         current = queue.pop(0)
-        if visited[current]:
-            return cycle
-        else:
+        if not visited[current]:
             visited[current] = True
-        current_neighbours = find_neighbour(current, matr, queue)
+            cycle.append(current)
+        else:
+            return cycle
+        current_neighbours = find_neighbour(current, matr, exclude_elements)
+        for y in current_neighbours:
+            pred[y] = current
         queue += current_neighbours
-    return 0
-
-bfs(read_graph())
+    return "A"
 
 
+print(bfs(read_graph()))
 
