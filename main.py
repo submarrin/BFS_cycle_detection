@@ -23,10 +23,10 @@ def find_neighbour(s, matr, excluded=[]):
 # print(find_neighbour(3, read_graph()))
 
 
-def bfs(matr):
+def bfs(start, matr):
     queue = []
     visited = [False] * len(matr)
-    queue.append(0)
+    queue.append(start)
     pred = [-1]*len(matr)
     cycle = []
     # print('Начало работы', {'queue': queue, 'visited': visited, 'current': current})
@@ -47,5 +47,14 @@ def bfs(matr):
     return "A"
 
 
-print(bfs(read_graph()))
+def main(matr):
+    for x in range(len(matr)):
+        result = bfs(x, matr)
+        if result != "A":
+            print(x, result)
+    print("A")
+
+
+main(read_graph())
+
 
