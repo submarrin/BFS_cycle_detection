@@ -23,27 +23,40 @@ def find_neighbour(s, matr, excluded=[]):
 # print(find_neighbour(3, read_graph()))
 
 
+def get_history(start, y, pred):
+    history = [y]
+    while y != start:
+        y = pred[y]
+        history.append(y)
+    return history
+
+
+print(get_history(0, 3, [-1, 0, 1, 2]))
+
+
+
+
 def bfs(start, matr):
     queue = []
     visited = [False] * len(matr)
     queue.append(start)
+    visited[start] = True
     pred = [-1]*len(matr)
     cycle = []
     # print('Начало работы', {'queue': queue, 'visited': visited, 'current': current})
     # import pdb
     # pdb.set_trace()
     while len(queue) > 0:
-        exclude_elements = queue.copy()
         current = queue.pop(0)
-        if not visited[current]:
-            visited[current] = True
-            cycle.append(current)
-        else:
-            return cycle
-        current_neighbours = find_neighbour(current, matr, exclude_elements)
+        current_neighbours = find_neighbour(current, matr)
         for y in current_neighbours:
             pred[y] = current
-        queue += current_neighbours
+            if not visited[y]:
+                visited[y] = True
+                queue.append(y)
+            else:
+                if y not in queue:
+                    return get_history(start, y, pred)
     return "A"
 
 
