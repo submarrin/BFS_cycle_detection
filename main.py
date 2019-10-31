@@ -23,38 +23,56 @@ def find_neighbour(s, matr, excluded=[]):
 # print(find_neighbour(3, read_graph()))
 
 
-def bfs(start, matr):
-    queue = []
-    visited = [False] * len(matr)
-    queue.append(start)
+def get_history(current, neigh, pred, start):
+    history = [current, neigh]
+    if pred[current] == pred[neigh]:
+        history.append(pred[neigh])
+        return sorted(history)
+    while pred[neigh] != pred[current]:
+        history.append(pred[neigh])
+        history.append(pred[current])
+        if pred[neigh] == start:
+            current = pred[current]
+        elif pred[current] == start:
+            neigh = pred[neigh]
+        else:
+            current = pred[current]
+            neigh = pred[neigh]
+    return sorted(history)
+
+
+def find_cycle(start, matr):
+    queue = [start]
     pred = [-1]*len(matr)
-    cycle = []
-    # print('Начало работы', {'queue': queue, 'visited': visited, 'current': current})
+    visited = [-1]*len(matr)
+    pred[0] = -1
     # import pdb
     # pdb.set_trace()
-    while len(queue) > 0:
-        exclude_elements = queue.copy()
+    while queue:
         current = queue.pop(0)
-        if not visited[current]:
-            visited[current] = True
-            cycle.append(current)
-        else:
-            return cycle
-        current_neighbours = find_neighbour(current, matr, exclude_elements)
+        visited[current] = 1
+        current_neighbours = find_neighbour(current, matr)
         for y in current_neighbours:
-            pred[y] = current
-        queue += current_neighbours
+            if visited[y] == 1:
+                continue
+            elif visited[y] == -1:
+                queue.append(y)
+                visited[y] = 0
+                pred[y] = current
+            else:
+                return get_history(y, current, pred, start)
     return "A"
 
 
 def main(matr):
-    for x in range(len(matr)):
-        result = bfs(x, matr)
-        if result != "A":
-            print(x, result)
-    print("A")
+    return find_cycle(0, matr)
+    # for x in range(len(matr)):
+    #     result = find_cycle(x, matr)
+    #     if result != "A":
+    #         print(x, result)
+    # print("Finished")
 
 
-main(read_graph())
+print(main(read_graph()))
 
 
